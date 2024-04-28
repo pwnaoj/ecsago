@@ -32,7 +32,7 @@ class Individual:
         weights = np.exp(-np.square(distances) / (2 * np.square(self.sigma)))
         
         # To further reduce the effect of outliers, weights are binarized
-        # weights = np.where(weights > 0.3, weights, 0)
+        weights = np.where(weights > 0.3, weights, 0)
         
         # Update scale measure sigma for the next generation
         self.sigma = np.sqrt(np.sum(weights * np.square(distances)) / np.sum(weights))
@@ -41,12 +41,21 @@ class Individual:
         self.fitness = np.sum(weights / np.square(self.sigma))
 
 class ECSAGO:
-    def __init__(self, population_size, num_generations, data):
+    def __init__(self, population_size, num_generations, data_path):
         self.population_size = population_size
         self.num_generations = num_generations
-        self.data = data
-        self.population = [Individual(np.random.random(data.shape[1])) for _ in range(population_size)]
+        self.data = self.load_data_from_file(data_path) 
+        self.population = [Individual(np.random.random(self.data.shape[1])) for _ in range(population_size)]
         self.mutation_scale = 0.1  # Escala de mutación inicial, debería adaptarse dinámicamente
+
+    @staticmethod
+    def load_data_from_file(file_path):
+        with open(file_path, 'r') as file:
+            # Omitir la primera línea que contiene la cantidad de datos y la dimensión
+            next(file)
+            # Leer los datos y convertirlos en un array de NumPy
+            data = np.array([list(map(float, line.split())) for line in file])
+        return data
 
     def plot_clusters(self):
         # Asegúrate de que 'self.data' es bidimensional
@@ -83,9 +92,10 @@ class ECSAGO:
             print(f"Generation {generation}: Mejor aptitud = {self.population[0].fitness}")
 
 # Ejemplo de uso
-if __name__ == "__main__":
-    # Generar datos sintéticos bidimensionales para la demostración
-    data = np.random.rand(100, 2)  # Asegúrate de que esto es bidimensional
-    ecsago = ECSAGO(population_size=5, num_generations=1, data=data)
-    ecsago.run()
-    ecsago.plot_clusters()
+if __name__ == "__main__":    
+    # Cargar datos del archivo
+    file_path = 'src/datasets/cluster-1-0.txt'  # Actualizar con la ruta correcta
+    ecsago = ECSAGO(population_size=100, num_generations=30, data_path=file_path)  # Inicializar con datos vacíos
+    ecsago.data = ecsago.load_data_from_file(file_path)  # Cargar datos en el algoritmo
+    ecsago.run()  # Ejecutar el algoritmo
+    ecsago.plot_clusters()  # Visualizar los clusters
