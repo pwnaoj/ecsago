@@ -31,14 +31,19 @@ class Individual:
         distances = calculate_distance(data, self.genome)
         weights = np.exp(-np.square(distances) / (2 * np.square(self.sigma)))
         
-        # To further reduce the effect of outliers, weights are binarized
+        # Binarizar los pesos
         weights = np.where(weights > 0.3, weights, 0)
-        
-        # Update scale measure sigma for the next generation
-        self.sigma = np.sqrt(np.sum(weights * np.square(distances)) / np.sum(weights))
-        
-        # Calculate fitness
-        self.fitness = np.sum(weights / np.square(self.sigma))
+
+        sum_weights = np.sum(weights)
+        if sum_weights > 0:
+            # Si hay pesos válidos, calcula sigma
+            self.sigma = np.sqrt(np.sum(weights * np.square(distances)) / sum_weights)
+            # Calcula la aptitud
+            self.fitness = np.sum(weights / np.square(self.sigma))
+        else:
+            # Si todos los pesos son cero, asigna una aptitud mala, como por ejemplo 0 o inf
+            # Dependiendo de si quieres minimizar o maximizar la aptitud
+            self.fitness = 0  # o np.inf
 
 class ECSAGO:
     def __init__(self, population_size, num_generations, data_path):
