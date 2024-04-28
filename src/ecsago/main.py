@@ -49,17 +49,16 @@ class ECSAGO:
         self.mutation_scale = 0.1  # Escala de mutación inicial, debería adaptarse dinámicamente
 
     def plot_clusters(self):
-        # Asumiendo que 'self.data' es bidimensional
-        x, y = self.data.T
-        plt.figure(figsize=(8, 6))
+        # Asegúrate de que 'self.data' es bidimensional
+        if self.data.shape[1] != 2:
+            raise ValueError("La función de visualización sólo puede manejar datos bidimensionales.")
 
         # Dibuja cada punto de datos
-        plt.scatter(x, y, color='gray', label='Datos')
+        plt.scatter(self.data[:, 0], self.data[:, 1], color='gray', label='Datos')
 
         # Dibuja los centros de los clusters
         for individual in self.population:
-            center_x, center_y = individual.genome
-            plt.scatter(center_x, center_y, color='red', edgecolor='black', label='Centro del Cluster')
+            plt.scatter(individual.genome[0], individual.genome[1], color='red', edgecolor='black', s=100, label='Centro del Cluster')
 
         plt.xlabel('Feature 1')
         plt.ylabel('Feature 2')
@@ -84,7 +83,9 @@ class ECSAGO:
             print(f"Generation {generation}: Mejor aptitud = {self.population[0].fitness}")
 
 # Ejemplo de uso
-data = np.random.random((100, 10))  # 100 puntos de datos, 10 dimensiones
-ecsago = ECSAGO(population_size=50, num_generations=100, data=data)
-ecsago.run()
-ecsago.plot_clusters()
+if __name__ == "__main__":
+    # Generar datos sintéticos bidimensionales para la demostración
+    data = np.random.rand(100, 2)  # Asegúrate de que esto es bidimensional
+    ecsago = ECSAGO(population_size=5, num_generations=1, data=data)
+    ecsago.run()
+    ecsago.plot_clusters()
