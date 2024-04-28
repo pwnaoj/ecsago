@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import numpy as np
 
 from abc import ABC, abstractmethod
@@ -31,7 +32,7 @@ class Individual:
         weights = np.exp(-np.square(distances) / (2 * np.square(self.sigma)))
         
         # To further reduce the effect of outliers, weights are binarized
-        weights = np.where(weights > 0.3, weights, 0)
+        # weights = np.where(weights > 0.3, weights, 0)
         
         # Update scale measure sigma for the next generation
         self.sigma = np.sqrt(np.sum(weights * np.square(distances)) / np.sum(weights))
@@ -46,6 +47,25 @@ class ECSAGO:
         self.data = data
         self.population = [Individual(np.random.random(data.shape[1])) for _ in range(population_size)]
         self.mutation_scale = 0.1  # Escala de mutación inicial, debería adaptarse dinámicamente
+
+    def plot_clusters(self):
+        # Asumiendo que 'self.data' es bidimensional
+        x, y = self.data.T
+        plt.figure(figsize=(8, 6))
+
+        # Dibuja cada punto de datos
+        plt.scatter(x, y, color='gray', label='Datos')
+
+        # Dibuja los centros de los clusters
+        for individual in self.population:
+            center_x, center_y = individual.genome
+            plt.scatter(center_x, center_y, color='red', edgecolor='black', label='Centro del Cluster')
+
+        plt.xlabel('Feature 1')
+        plt.ylabel('Feature 2')
+        plt.title('Visualización de Clusters ECSAGO')
+        plt.legend()
+        plt.show()
 
     def run(self):
         for generation in range(self.num_generations):
@@ -67,3 +87,4 @@ class ECSAGO:
 data = np.random.random((100, 10))  # 100 puntos de datos, 10 dimensiones
 ecsago = ECSAGO(population_size=50, num_generations=100, data=data)
 ecsago.run()
+ecsago.plot_clusters()
