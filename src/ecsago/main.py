@@ -17,10 +17,27 @@ class GaussianMutation(GeneticOperator):
     def apply(self, individual, scale):
         return individual + np.random.normal(0, scale, size=individual.shape)
 
+def calculate_distance(data_point, center):
+    return np.linalg.norm(data_point - center, axis=1)
+
 class Individual:
-    def __init__(self, genome):
+    def __init__(self, genome, sigma=0.1):
         self.genome = genome
         self.fitness = None
+        self.sigma = sigma  # Scale measure for this individual
+
+    def evaluate_fitness(self, data):
+        distances = calculate_distance(data, self.genome)
+        weights = np.exp(-np.square(distances) / (2 * np.square(self.sigma)))
+        
+        # To further reduce the effect of outliers, weights are binarized
+        weights = np.where(weights > 0.3, weights, 0)
+        
+        # Update scale measure sigma for the next generation
+        self.sigma = np.sqrt(np.sum(weights * np.square(distances)) / np.sum(weights))
+        
+        # Calculate fitness
+        self.fitness = np.sum(weights / np.square(self.sigma))
 
     def evaluate_fitness(self, data):
         # Esta función debería calcular la adecuación basada en alguna métrica específica
