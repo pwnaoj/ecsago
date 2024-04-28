@@ -39,10 +39,6 @@ class Individual:
         # Calculate fitness
         self.fitness = np.sum(weights / np.square(self.sigma))
 
-    def evaluate_fitness(self, data):
-        # Esta función debería calcular la adecuación basada en alguna métrica específica
-        self.fitness = np.random.random()  # Adecuación aleatoria para demostración
-
 class ECSAGO:
     def __init__(self, population_size, num_generations, data):
         self.population_size = population_size
