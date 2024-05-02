@@ -118,17 +118,20 @@ class Population:
             self.evaluate_operators()
 
 class EvolutionaryProcess:
-    def __init__(self, data, population_size, gene_length, generations):
-        self.population = Population(population_size, gene_length, data)
+    def __init__(self, data, size, gene_length, generations):
+        self.population = Population(size, gene_length, data)
         self.generations = generations
 
     def run(self):
         self.population.evolve(self.generations)
-        self.extract_final_prototypes()
+        return self.extract_final_prototypes()
 
     def extract_final_prototypes(self):
-        # Extraer y posiblemente refinar prototipos finales
-        pass
+        # Extrae los mejores individuos según algún criterio, por ejemplo, los de mayor fitness
+        sorted_individuals = sorted(self.population.individuals, key=lambda x: x.fitness, reverse=True)
+        # Podría incluir algún proceso de refinamiento adicional si es necesario
+        # return sorted_individuals[:10]  # Retornar los 10 mejores como ejemplo
+        return sorted_individuals
 
 # Usar el proceso evolutivo
 data = np.random.rand(100, 10)  # ejemplo de datos
