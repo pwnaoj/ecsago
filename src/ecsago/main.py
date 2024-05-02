@@ -64,7 +64,7 @@ class ECSAGO:
         return data
 
     def plot_clusters(self):
-        # Asegúrate de que 'self.data' es bidimensional
+        # Me aseguro de que 'self.data' es bidimensional
         if self.data.shape[1] != 2:
             raise ValueError("La función de visualización sólo puede manejar datos bidimensionales.")
 
