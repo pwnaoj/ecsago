@@ -22,7 +22,7 @@ class Individual:
     def __init__(self, genome, sigma=0.1):
         self.genome = genome
         self.fitness = None
-        self.sigma = sigma  # Scale measure for this individual
+        self.sigma = sigma
 
     @staticmethod
     def calculate_distance(data_point, center):
@@ -97,10 +97,10 @@ class ECSAGO:
             self.population = new_population
             print(f"Generation {generation}: Mejor aptitud = {self.population[0].fitness}")
 
-# Ejemplo de uso
+
 if __name__ == "__main__":    
     # Cargar datos del archivo
-    file_path = 'src/datasets/cluster-1-0.txt'  # Actualizar con la ruta correcta
+    file_path = 'src/datasets/Five_Clust.txt'  # Actualizar con la ruta correcta
     ecsago = ECSAGO(population_size=100, num_generations=30, data_path=file_path)  # Inicializar con datos vacíos
     ecsago.data = ecsago.load_data_from_file(file_path)  # Cargar datos en el algoritmo
     ecsago.run()  # Ejecutar el algoritmo
