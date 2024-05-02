@@ -41,8 +41,12 @@ class Population:
         random.shuffle(self.individuals)
 
     def crossover(self, p1, p2):
-        child_genes = (p1.genes + p2.genes) / 2
-        return Individual(child_genes)
+        # Asegurando que devolvemos dos individuos
+        # Aquí se utiliza un enfoque simple de promedio para el cruce
+        alpha = 0.5  # o algún otro mecanismo para mezclar genes
+        child1_genes = alpha * p1.genes + (1 - alpha) * p2.genes
+        child2_genes = (1 - alpha) * p1.genes + alpha * p2.genes
+        return Individual(child1_genes), Individual(child2_genes)
 
     def mutate(self, individual):
         mutation_strength = np.sqrt(individual.sigma_squared)
