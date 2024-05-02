@@ -133,7 +133,16 @@ class EvolutionaryProcess:
         # return sorted_individuals[:10]  # Retornar los 10 mejores como ejemplo
         return sorted_individuals
 
-# Usar el proceso evolutivo
-data = np.random.rand(100, 10)  # ejemplo de datos
-evolutionary_process = EvolutionaryProcess(data, 50, 10, 100)
-evolutionary_process.run()
+# Suposiciones de los datos y parámetros
+data_points = np.random.rand(100, 5)  # 100 puntos de datos, 5 dimensiones
+size = 50  # Tamaño de la población
+gene_length = 5  # Longitud del genoma de cada individuo
+generations = 100  # Número de generaciones
+
+# Crear y ejecutar el proceso evolutivo
+evolution_process = EvolutionaryProcess(data=data_points, size=size, gene_length=gene_length, generations=generations)
+final_prototypes = evolution_process.run()
+
+# Imprimir los resultados finales
+for prototype in final_prototypes:
+    print("Genes:", prototype.genes, "Fitness:", prototype.fitness)
