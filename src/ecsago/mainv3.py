@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import numpy as np
 import random
 
@@ -118,8 +119,23 @@ class Population:
     def evolve(self, generations):
         for _ in range(generations):
             self.generate_offspring()
-            self.apply_niching_strategy()
+            self.apply_niching_strategy(self.data, 50)
             self.evaluate_operators()
+            # self.visualize()
+
+    def visualize(self):
+        plt.figure(figsize=(10, 6))
+        # Plot de los puntos de datos
+        plt.scatter(self.data[:, 0], self.data[:, 1], c='blue', label='Data Points', alpha=0.5)
+        # Plot de los centros de los clústeres
+        for ind in self.individuals:
+            plt.scatter(ind.genes[0], ind.genes[1], c='red', marker='x', s=100, label='Centros' if 'Centros' not in plt.gca().get_legend_handles_labels()[1] else "")
+        plt.title('Visualización de Clustering ECSAGO')
+        plt.xlabel('Dimensión 1')
+        plt.ylabel('Dimensión 2')
+        plt.legend()
+        plt.grid(True)
+        plt.show()
 
 class EvolutionaryProcess:
     def __init__(self, data, size, gene_length, generations):
@@ -128,6 +144,7 @@ class EvolutionaryProcess:
 
     def run(self):
         self.population.evolve(self.generations)
+        self.population.visualize()
         return self.extract_final_prototypes()
 
     def extract_final_prototypes(self):
@@ -137,11 +154,21 @@ class EvolutionaryProcess:
         # return sorted_individuals[:10]  # Retornar los 10 mejores como ejemplo
         return sorted_individuals
 
+def load_data_from_file(file_path):
+        with open(file_path, 'r') as file:
+            # Omitir la primera línea que contiene la cantidad de datos y la dimensión
+            next(file)
+            # Leer los datos y convertirlos en un array de NumPy
+            data = np.array([list(map(float, line.split())) for line in file])
+        return data
+
 # Suposiciones de los datos y parámetros
-data_points = np.random.rand(100, 5)  # 100 puntos de datos, 5 dimensiones
-size = 50  # Tamaño de la población
-gene_length = 5  # Longitud del genoma de cada individuo
-generations = 100  # Número de generaciones
+# data_points = np.random.rand(100, 5)  # 100 puntos de datos, 5 dimensiones
+file_path = 'src/datasets/Five_Clust.txt'  # Actualizar con la ruta correcta
+data_points = load_data_from_file(file_path)
+size = 100  # Tamaño de la población
+gene_length = 2  # Longitud del genoma de cada individuo
+generations = 30  # Número de generaciones
 
 # Crear y ejecutar el proceso evolutivo
 evolution_process = EvolutionaryProcess(data=data_points, size=size, gene_length=gene_length, generations=generations)
