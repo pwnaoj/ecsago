@@ -3,13 +3,34 @@ import random
 
 class Individual:
     def __init__(self, genes):
-        self.genes = np.array(genes)
+        self.genes = np.array(genes)  # candidate center location ci
         self.fitness = None
-        self.rates = np.random.dirichlet(np.ones(3))  # Asumiendo tres operadores
+        self.sigma_squared = 1.0  # initial scale measure
+        self.rates = np.random.dirichlet(np.ones(3))  # Asumiendo tres operadores genéticos
 
-    def evaluate_fitness(self, data):
-        # Implementación específica del cálculo de fitness
-        pass
+    def evaluate_fitness(self, data_points):
+        # Calculate distances from all data points to the candidate center
+        distances_squared = np.sum((data_points - self.genes) ** 2, axis=1)
+        
+        # Calculate weights using the current scale
+        weights = np.exp(-distances_squared / (2 * self.sigma_squared))
+        
+        # Update scale measure sigma_squared for the next generation
+        if np.sum(weights) > 0:
+            self.sigma_squared = np.sum(weights * distances_squared) / np.sum(weights)
+        
+        # Calculate fitness
+        self.fitness = np.sum(weights) / self.sigma_squared
+        
+        return self.fitness
+
+    def update_rates(self, success):
+        # A simple mechanism to update rates based on success or failure of operations
+        if success:
+            self.rates *= 1.1  # Boost rates
+        else:
+            self.rates *= 0.9  # Reduce rates
+        self.rates /= np.sum(self.rates)  # Normalize rates to maintain them as a valid probability distribution
 
 class Population:
     def __init__(self, size, gene_length, data):
