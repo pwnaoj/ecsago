@@ -101,7 +101,7 @@ class ECSAGO:
 if __name__ == "__main__":    
     # Cargar datos del archivo
     file_path = 'src/datasets/Five_Clust.txt'  # Actualizar con la ruta correcta
-    ecsago = ECSAGO(population_size=100, num_generations=30, data_path=file_path)  # Inicializar con datos vacíos
+    ecsago = ECSAGO(population_size=200, num_generations=30, data_path=file_path)  # Inicializar con datos vacíos
     ecsago.data = ecsago.load_data_from_file(file_path)  # Cargar datos en el algoritmo
     ecsago.run()  # Ejecutar el algoritmo
     ecsago.plot_clusters()  # Visualizar los clusters
