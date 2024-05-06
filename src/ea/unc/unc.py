@@ -40,14 +40,13 @@ class Population:
     def __init__(self, size, data):
         self.individuals = [Individual(genes) for genes in data]
         self.data = data  # Almacenar los datos en la población para su uso en fitness
-        self.size = size
+        self.pop_size = size
 
     def shuffle_population(self):
         random.shuffle(self.individuals)
 
     def crossover(self, p1, p2):
         # Linear Crossover per Dimension (LCD)
-        # Generar coeficientes alpha diferentes para cada dimensión
         alphas = np.random.rand(p1.genes.size)
         child1_genes = alphas * p1.genes + (1 - alphas) * p2.genes
         child2_genes = (1 - alphas) * p1.genes + alphas * p2.genes
@@ -60,22 +59,11 @@ class Population:
         individual.genes += mutation
         return individual
 
-    def generate_offspring(self):
-        new_population = []
-        self.shuffle_population()
-        for i in range(0, len(self.individuals) - 1, 2):
-            p1, p2 = self.individuals[i], self.individuals[i+1]
-            c1, c2 = self.crossover(p1, p2)
-            c1 = self.mutate(c1)
-            c2 = self.mutate(c2)
-            new_population.extend([c1, c2])
-        self.individuals = new_population
-
     def deterministic_crowding(self, data, max_iter):
         for _ in range(max_iter):
             self.shuffle_population()
             new_population = []
-            for i in range(0, int(self.size / 2), 2):
+            for i in range(0, int(self.pop_size / 2), 2):
                 p1, p2 = self.individuals[i], self.individuals[i+1]
                 c1, c2 = self.crossover(p1, p2)
                 c1 = self.mutate(c1)
@@ -132,7 +120,7 @@ class Population:
         # Plot de los centros de los clústeres
         for ind in self.individuals:
             plt.scatter(ind.genes[0], ind.genes[1], c='red', marker='x', s=100, label='Centros' if 'Centros' not in plt.gca().get_legend_handles_labels()[1] else "")
-        plt.title('Visualización de Clustering ECSAGO')
+        plt.title('Visualización de Clustering UNC')
         plt.xlabel('Dimensión 1')
         plt.ylabel('Dimensión 2')
         plt.legend()
