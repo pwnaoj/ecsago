@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+import numpy as np
 import random
 
 
@@ -5,35 +7,70 @@ class Individual:
     def __init__(self, genes):
         self.genes = genes
 
-    def fitness(self):
-        # Función de evaluación (fitness) que debes definir según tu problema
-        pass
+    def fitness(self, data_points):
+        # Calculate distances from all data points to the candidate center
+        distances_squared = np.sum((data_points - self.genes) ** 2, axis=1)
+        
+        # Calculate weights using the current scale
+        weights = np.exp(-distances_squared / (2 * self.sigma_squared))
 
-    def mutate(self):
-        # Función de mutación que debes definir según tu problema
-        pass
+        # Binarizar los pesos
+        weights = np.where(weights > 0.3, weights, 0)
+        
+        # Update scale measure sigma_squared for the next generation
+        if np.sum(weights) > 0:
+            self.sigma_squared = np.sum(weights * distances_squared) / np.sum(weights)
+        
+        # Calculate fitness
+        self.fitness = np.sum(weights) / self.sigma_squared
+        
+        return self.fitness
+
+    def mutate(self, individual):
+        # Gaussian Mutation
+        sigma_m = np.sqrt(individual.sigma_squared)  # Usar la medida de escala como base para la mutación
+        mutation = np.random.normal(0, sigma_m, individual.genes.shape)
+        individual.genes += mutation
+        return individual
 
     @staticmethod
     def crossover(parent1, parent2):
-        # Función de cruce (crossover) que debes definir según tu problema
-        # Retorna dos hijos (child1, child2)
-        pass
+        # Linear Crossover per Dimension (LCD)
+        alphas = np.random.rand(parent1.genes.size)
+        child1_genes = alphas * parent1.genes + (1 - alphas) * parent2.genes
+        child2_genes = (1 - alphas) * parent1.genes + alphas * parent2.genes
+        return Individual(child1_genes), Individual(child2_genes)
 
     @staticmethod
     def distance(ind1, ind2):
         # Función de distancia que debes definir según tu problema
-        pass
+        return np.linalg.norm(ind1 - ind2)
 
 class Population:
     def __init__(self, size):
         self.individuals = [self.create_individual() for _ in range(size)]
 
     def create_individual(self):
-        # Función para crear un nuevo individuo aleatorio
-        pass
+        # Función para crear un nuevo individuo aleatorio        
+        genes = [random.random() for _ in range(2)]  # Ejemplo con 2 genes
+        return Individual(genes)
 
     def shuffle(self):
         random.shuffle(self.individuals)
+
+    def visualize(self):
+        # Función de visualización de la población
+        x = [ind.genes[0] for ind in self.individuals]
+        y = [ind.genes[1] for ind in self.individuals]
+        fitness = [ind.fitness() for ind in self.individuals]
+
+        plt.figure(figsize=(10, 6))
+        plt.scatter(x, y, c=fitness, cmap='viridis', marker='o')
+        plt.colorbar(label='Fitness')
+        plt.xlabel('Gen 1')
+        plt.ylabel('Gen 2')
+        plt.title('Visualización de la Población Final')
+        plt.show()
 
 class DeterministicCrowding:
     def __init__(self, population_size, max_iter):
@@ -84,6 +121,7 @@ class DeterministicCrowding:
 #     max_iter = 1000
 #     dc = DeterministicCrowding(population_size, max_iter)
 #     final_population = dc.run()
+#     final_population.visualize()
 #     # Hacer algo con la población final
 
 # if __name__ == "__main__":

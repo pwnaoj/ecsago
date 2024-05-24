@@ -2,9 +2,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import random
 
+
 class Individual:
     def __init__(self, genes):
-        self.genes = np.array(genes)  # candidate center location ci
+        self.genes = genes  # candidate center location ci
         self.fitness = None
         self.sigma_squared = 0.1  # initial scale measure
         self.rates = np.random.dirichlet(np.ones(3))  # Asumiendo tres operadores genéticos
@@ -12,7 +13,7 @@ class Individual:
     def evaluate_fitness(self, data_points):
         # Calculate distances from all data points to the candidate center
         distances_squared = np.sum((data_points - self.genes) ** 2, axis=1)
-        
+
         # Calculate weights using the current scale
         weights = np.exp(-distances_squared / (2 * self.sigma_squared))
 
@@ -131,19 +132,34 @@ class EvolutionaryProcess:
     def __init__(self, data, size, generations):
         self.population = Population(size, data)
         self.generations = generations
-
-    def run(self):
-        self.population.evolve(generations=self.generations)
-        self.population.visualize()
-        return self.extract_final_prototypes()
+        self.data = data
 
     def extract_final_prototypes(self):
         # Extrae los mejores individuos según algún criterio, por ejemplo, los de mayor fitness
         sorted_individuals = sorted(self.population.individuals, key=lambda x: x.fitness, reverse=True)
         # Podría incluir algún proceso de refinamiento adicional si es necesario
-        return sorted_individuals[:5]  # Retornar los 10 mejores como ejemplo
-        # return sorted_individuals
+        return sorted_individuals
+    
+    def run(self):
+        self.population.evaluate_operators()
+        self.population.evolve(generations=self.generations)
+        self.population.visualize()
+        return self.extract_final_prototypes()
 
+    def visualize(self, final_prototypes):
+        plt.figure(figsize=(10, 6))
+        # Plot de los puntos de datos
+        plt.scatter(self.data[:, 0], self.data[:, 1], c='blue', label='Data Points', alpha=0.5)
+        # Plot de los centros de los clústeres
+        for ind in final_prototypes:
+            plt.scatter(ind.genes[0], ind.genes[1], c='red', marker='x', s=100, label='Centros' if 'Centros' not in plt.gca().get_legend_handles_labels()[1] else "")
+        plt.title('Visualización de Clustering UNC')
+        plt.xlabel('Dimensión 1')
+        plt.ylabel('Dimensión 2')
+        plt.legend()
+        plt.grid(True)
+        plt.show()
+    
 def load_data_from_file(file_path):
     with open(file_path, 'r') as file:
         # Omitir la primera línea que contiene la cantidad de datos y la dimensión
@@ -162,6 +178,7 @@ generations = 30  # Número de generaciones
 # Crear y ejecutar el proceso evolutivo
 evolution_process = EvolutionaryProcess(data=data_points, size=size, generations=generations)
 final_prototypes = evolution_process.run()
+# evolution_process.visualize(final_prototypes=final_prototypes)
 
 # Imprimir los resultados finales
 # for prototype in final_prototypes:
