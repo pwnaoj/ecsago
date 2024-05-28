@@ -10,7 +10,7 @@ class Individual:
 
     def evaluate_fitness(self):
         # Implementa la función de evaluación de fitness específica para tu problema
-        self.fitness = -np.sum(self.genes**2)  # Ejemplo simple
+        self.fitness = -np.sum(self.genes**2)
 
 class Population:
     def __init__(self, size, gene_length):
@@ -62,14 +62,14 @@ class Population:
 
         if operator == 'crossover':
             child = self.crossover(parents[0], parents[1])
-            child.evaluate_fitness()  # Asegúrate de evaluar el fitness aquí
+            child.evaluate_fitness()  # Evalua la función fitness
             offspring.append(child)
         elif operator == 'mutation':
             child = self.mutate(parents[0])
-            child.evaluate_fitness()  # Asegúrate de evaluar el fitness aquí
+            child.evaluate_fitness()  # Evalua la función fitness
             offspring.append(child)
         elif operator == 'recombination':
-            # Asegúrate de que se aplican correctamente la función de recombinación
+            # Aplico la función de recombinación
             children = self.recombination(parents[0], parents[1])
             offspring.extend(children)  # Añade ambos hijos a la lista de descendientes
 
@@ -108,7 +108,7 @@ class Population:
             rates[key] = rates[key] / total
 
 def termination_condition(t, individuals):
-    return t > 100  # Ejemplo de condición de terminación después de 100 generaciones
+    return t > 100  # Condición de terminación después de 100 generaciones
 
 pop_size = 10
 gene_length = 5

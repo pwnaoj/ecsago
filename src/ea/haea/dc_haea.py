@@ -1,58 +1,47 @@
 import random
 
 def init_population(lambda_):
-    # Inicializa la población de tamaño lambda_
-    # Implementa esta función según tu problema específico
+    # Inicializa la población de tamaño lambda_    
     pass
 
 def fitness(individual):
     # Calcula la aptitud (fitness) de un individuo
-    # Implementa esta función según tu problema específico
     pass
 
 def distance(ind1, ind2):
     # Calcula la distancia entre dos individuos
-    # Implementa esta función según tu problema específico
     pass
 
 def extract_rates(ind):
     # Extrae las tasas de un individuo
-    # Implementa esta función según tu problema específico
     pass
 
 def op_select(operators, rates):
     # Selecciona una operación basada en las tasas
-    # Implementa esta función según tu problema específico
     pass
 
 def extra_select(arity, P_t, ind):
     # Selecciona padres adicionales
-    # Implementa esta función según tu problema específico
     pass
 
 def apply_operator(operator, parents):
     # Aplica el operador a los padres para producir descendencia
-    # Implementa esta función según tu problema específico
     pass
 
 def best_of(offspring):
-    # Selecciona el mejor individuo de la descendencia
-    # Implementa esta función según tu problema específico
+    # Selecciona el mejor individuo de la descendencia    
     pass
 
 def normalize_rates(rates):
     # Normaliza las tasas
-    # Implementa esta función según tu problema específico
     pass
 
 def set_rates(ind, rates):
     # Establece las tasas para un individuo
-    # Implementa esta función según tu problema específico
     pass
 
 def arity(operator):
     # Determina el número de padres que un operador necesita
-    # Implementa esta función según tu problema específico
     pass
 
 def best_star(offspring, ind):
@@ -100,12 +89,11 @@ def dc_haea(lambda_, termination_condition, operators):
     
     return P
 
-# Ejemplo de uso (debes definir las funciones init_population, fitness, distance, extract_rates, op_select, extra_select, apply_operator, best_of, normalize_rates, set_rates y arity según tu problema específico)
 lambda_ = 100  # Tamaño de la población
 MAXITER = 1000  # Número máximo de iteraciones
-operators = []  # Lista de operadores, define estos según tu problema
+operators = []  # Lista de operadores
 
-termination_condition = lambda t, P: t >= MAXITER  # Ejemplo de condición de terminación
+termination_condition = lambda t, P: t >= MAXITER  # Condición de terminación
 
 best_population = dc_haea(lambda_, termination_condition, operators)
 
